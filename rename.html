@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>批量重命名ZIP内容</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 480px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 32px 24px 24px 24px;
+    }
+    h2 {
+      margin-top: 0;
+      font-weight: 600;
+      color: #333;
+      letter-spacing: 1px;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #555;
+      font-size: 15px;
+    }
+    input[type="file"] {
+      display: block;
+      margin-bottom: 10px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #409eff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 20px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #1976d2;
+    }
+    #downloadArea {
+      margin-top: 28px;
+    }
+    .download-group {
+      display: flex;
+      align-items: center;
+      background: #f2f6fc;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .download-group a {
+      color: #409eff;
+      text-decoration: none;
+      font-weight: 500;
+      margin-right: 18px;
+    }
+    .download-group button {
+      background: #e57373;
+      color: #fff;
+      padding: 5px 14px;
+      font-size: 13px;
+      margin: 0;
+    }
+    .download-group button:hover {
+      background: #b71c1c;
+    }
+    .tip {
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>批量重命名 ZIP 内容</h2>
+    <div class="form-group">
+      <label for="zipInput">选择 ZIP 文件（可多选）</label>
+      <input type="file" id="zipInput" multiple accept=".zip" />
+    </div>
+    <div class="form-group">
+      <label for="newNameInput">新文件名</label>
+      <input type="text" id="newNameInput" placeholder="输入新文件名" />
+    </div>
+    <div class="form-group">
+      <button onclick="processZips()">处理并生成下载链接</button>
+    </div>
+    <div class="tip">仅会重命名与压缩包同名的根目录文件，其他文件保持不变。</div>
+    <div id="downloadArea"></div>
+  </div>
+  <script>
+    let files = [];
+    document.getElementById('zipInput').addEventListener('change', e => {
+      files = Array.from(e.target.files);
+    });
+
+    async function processZips() {
+      const newName = document.getElementById('newNameInput').value.trim();
+      if (!newName) {
+        alert('请先输入新文件名');
+        return;
+      }
+      for (const file of files) {
+        const baseName = file.name.replace(/\.zip$/, '');
+        const zip = await JSZip.loadAsync(file);
+        let renamed = false;
+
+        // 只处理根目录下的文件
+        const rootFiles = Object.keys(zip.files).filter(entryName => !entryName.includes('/'));
+
+        for (const entryName of rootFiles) {
+          const fileBase = entryName;
+          const dotIndex = fileBase.lastIndexOf('.');
+          if (dotIndex > 0) {
+            const name = fileBase.substring(0, dotIndex);
+            const ext = fileBase.substring(dotIndex); // 包含点
+            console.log(name, baseName, '--a')
+            if (name === baseName) {
+              const content = await zip.files[entryName].async('uint8array');
+              zip.remove(entryName);
+              zip.file(newName + ext, content);
+              renamed = true;
+            }
+          }
+        }
+
+        if (renamed) {
+          const newZipBlob = await zip.generateAsync({ type: 'blob' });
+          const downloadArea = document.getElementById('downloadArea');
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(newZipBlob);
+          a.download = newName + '.zip';
+          a.textContent = `下载：${newName}.zip`;
+          a.style.marginRight = '18px';
+
+          const removeBtn = document.createElement('button');
+          removeBtn.textContent = '移除';
+          removeBtn.onclick = () => {
+            URL.revokeObjectURL(a.href);
+            downloadArea.removeChild(wrapper);
+          };
+
+          const wrapper = document.createElement('div');
+          wrapper.className = 'download-group';
+          wrapper.appendChild(a);
+          wrapper.appendChild(removeBtn);
+
+          downloadArea.appendChild(wrapper);
+        } else {
+          alert('未找到同名文件: ' + file.name);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
