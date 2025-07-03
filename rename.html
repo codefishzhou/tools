@@ -119,7 +119,7 @@
     });
 
     async function processZips() {
-      const newName = document.getElementById('newNameInput').value.trim();
+      const newName = document.getElementById('newNameInput').value.trim().replace('00', '0');
       if (!newName) {
         alert('请先输入新文件名');
         return;
@@ -156,6 +156,9 @@
           a.download = newName + '.zip';
           a.textContent = `下载：${newName}.zip`;
           a.style.marginRight = '18px';
+
+          // 自动触发下载
+          a.click();
 
           const removeBtn = document.createElement('button');
           removeBtn.textContent = '移除';
