@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周训练计划 · 手臂优先 · 腰突友好</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #f4f6fa;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            padding: 2rem 1.5rem 2.5rem;
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #0b1a33;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .subhead {
+            color: #4a5b6e;
+            font-size: 0.95rem;
+            border-left: 4px solid #3b82f6;
+            padding-left: 14px;
+            margin-top: 4px;
+            margin-bottom: 1.8rem;
+            background: #f0f4fe;
+            border-radius: 0 12px 12px 0;
+            padding: 10px 16px;
+            line-height: 1.5;
+        }
+        .subhead strong {
+            color: #1d4ed8;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid #e9edf4;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 700px;
+        }
+        th {
+            background: #f8faff;
+            color: #1e293b;
+            font-weight: 600;
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 2px solid #dce2ec;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #eef2f8;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .day-label {
+            font-weight: 600;
+            color: #0b1a33;
+            white-space: nowrap;
+        }
+        .day-label small {
+            font-weight: 400;
+            color: #64748b;
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 2px;
+        }
+        .theme {
+            font-weight: 500;
+            color: #0b1a33;
+        }
+        .theme .highlight {
+            background: #dbeafe;
+            padding: 0 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1d4ed8;
+        }
+        .action-list {
+            margin: 0;
+            padding-left: 1.2rem;
+            list-style: none;
+        }
+        .action-list li {
+            position: relative;
+            padding-left: 16px;
+            margin-bottom: 4px;
+            font-size: 0.88rem;
+        }
+        .action-list li::before {
+            content: "•";
+            color: #3b82f6;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .swim-detail {
+            background: #f8fafc;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 2px;
+        }
+        .swim-detail strong {
+            color: #0b1a33;
+        }
+        .badge {
+            display: inline-block;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-right: 4px;
+            letter-spacing: 0.2px;
+        }
+        .badge-rest {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .badge-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .footnote {
+            margin-top: 2rem;
+            padding: 1.2rem 1.5rem;
+            background: #f9fbfe;
+            border-radius: 16px;
+            border-left: 5px solid #3b82f6;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            color: #1e293b;
+            font-size: 0.92rem;
+        }
+        .footnote strong {
+            color: #0b1a33;
+        }
+        .footnote .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 20px;
+        }
+        .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .dot-blue { background: #3b82f6; }
+        .dot-green { background: #22c55e; }
+        .dot-orange { background: #f59e0b; }
+        .dot-purple { background: #8b5cf6; }
+        @media (max-width: 650px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 1.4rem; }
+            th, td { padding: 10px 8px; font-size: 0.82rem; }
+            .action-list li { font-size: 0.8rem; }
+            .subhead { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        🏋️ 上肢精训 · 周计划
+        <span style="font-size: 0.8rem; font-weight: 400; color: #4a5b6e; margin-left: auto;">腰突安全 · 手臂优先</span>
+    </h1>
+    <div class="subhead">
+        ⚡ <strong>一周 3 次手臂</strong>（周一/三/五） + 背部（周六）+ 肩膀（周日） · 每次力量 ≤ 40 分钟 · 周二/周四主动恢复
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 12%;">星期</th>
+                    <th style="width: 22%;">力量主题</th>
+                    <th style="width: 44%;">训练内容（全部坐姿/支撑 · 腰不动）</th>
+                    <th style="width: 22%;">游泳安排</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 周一 -->
+                <tr>
+                    <td class="day-label">周一 <small>手臂日①</small></td>
+                    <td><span class="theme">🔵 二头 + 后束</span></td>
+                    <td>
+                        <ul class="action-list">
+                            <li>哑铃交替弯举（坐姿） 4×12/侧</li>
+                            <li>牧师凳弯举 3×15</li>
+                            <li>绳索面拉 (Face Pull) 4×20</li>
+                            <li>蝴蝶机反向飞鸟 3×15</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <span class="swim-detail">🏊 20 min · <strong>拖腿游</strong></span><br>
+                        <span style="font-size:0.8rem; color:#475569;">腿放松，全靠手臂划水</span>
+                    </td>
+                </tr>
+                <!-- 周二 -->
+                <tr style="background: #fafcff;">
+                    <td class="day-label">周二 <small>💤 休息</small></td>
+                    <td><span style="color: #64748b;">— 无力量 —</span></td>
+                    <td style="color: #475569; font-size:0.9rem;">完全休息 · 若想动只散步或拉伸</td>
+                    <td><span style="color: #64748b;">不游泳</span> <span class="badge badge-rest">恢复</span></td>
+                </tr>
+                <!-- 周三 -->
+                <tr>
+                    <td class="day-label">周三 <small>手臂日②</small></td>
+                    <td><span class="theme">🟠 三头 + 中束</span></td>
+                    <td>
+                        <ul class="action-list">
+                            <li>坐姿哑铃推举 3×10（轻重量热身）</li>
+                            <li>绳索下压（正握） 4×15</li>
+                            <li>哑铃颈后臂屈伸（坐姿） 3×12</li>
+                            <li>哑铃侧平举（坐姿微前倾） 4×15</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <span class="swim-detail">🏊 20 min · <strong>放松游</strong></span><br>
+                        <span style="font-size:0.8rem; color:#475569;">二次腿，轻轻带过</span>
+                    </td>
+                </tr>
+                <!-- 周四 -->
+                <tr style="background: #fafcff;">
+                    <td class="day-label">周四 <small>🧘 主动恢复</small></td>
+                    <td><span style="color: #64748b;">— 无力量 —</span></td>
+                    <td style="color: #475569; font-size:0.9rem;">只游泳，排酸放松</td>
+                    <td>
+                        <span class="swim-detail">🏊 20-25 min · <strong>极慢速漂移</strong></span><br>
+                        <span style="font-size:0.8rem; color:#475569;">纯排酸，不冲速度</span>
+                    </td>
+                </tr>
+                <!-- 周五 -->
+                <tr>
+                    <td class="day-label">周五 <small>手臂日③</small></td>
+                    <td><span class="theme">🔴 二头+三头超级组</span></td>
+                    <td>
+                        <ul class="action-list">
+                            <li><span class="badge">超级组A</span> 杠铃弯举 3×12 + 凳上臂屈伸 3×15</li>
+                            <li><span class="badge">超级组B</span> 锤式弯举 3×15 + 反握绳索下压 3×15</li>
+                            <li>腕弯举（坐姿） 3×20（强化前臂）</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <span class="swim-detail">🏊 20 min · <strong>拖腿游</strong></span><br>
+                        <span style="font-size:0.8rem; color:#475569;">手臂充血，正好划水排酸</span>
+                    </td>
+                </tr>
+                <!-- 周六 -->
+                <tr>
+                    <td class="day-label">周六 <small>背部专项</small></td>
+                    <td><span class="theme">🟢 背阔 + 上背厚度</span></td>
+                    <td>
+                        <ul class="action-list">
+                            <li>高位下拉（宽握） 4×12</li>
+                            <li>胸部支撑划船（T杠/器械） 4×12</li>
+                            <li>单臂哑铃划船（凳支撑） 4×12/侧</li>
+                            <li>直臂下压（绳索） 3×15</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <span class="swim-detail">🏊 25 min · <strong>中速</strong></span><br>
+                        <span style="font-size:0.8rem; color:#475569;">手臂辅助划水，腿不动</span>
+                    </td>
+                </tr>
+                <!-- 周日 -->
+                <tr>
+                    <td class="day-label">周日 <small>肩膀专项</small></td>
+                    <td><span class="theme">🟣 三角肌前中后</span></td>
+                    <td>
+                        <ul class="action-list">
+                            <li>坐姿哑铃推举 4×10</li>
+                            <li>哑铃侧平举（坐姿） 4×15</li>
+                            <li>蝴蝶机反向飞鸟 4×15</li>
+                            <li>哑铃耸肩 3×15</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <span class="swim-detail">🏊 20 min · <strong>放松游</strong></span><br>
+                        <span style="font-size:0.8rem; color:#475569;">不冲速度，感受水感</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footnote">
+        <div class="row">
+            <span><span class="dot dot-blue"></span> <strong>腰突安全</strong> — 所有动作采用坐姿或支撑位，腰部紧贴靠背，严禁弓腰</span>
+            <span><span class="dot dot-green"></span> <strong>力量时长</strong> — 每次 ≤ 40 分钟，组间休息 60 秒，保留「有余力」</span>
+        </div>
+        <div class="row">
+            <span><span class="dot dot-orange"></span> <strong>游泳发力</strong> — 手臂日拖腿游，靠上肢推进；打腿轻带，保护腰椎</span>
+            <span><span class="dot dot-purple"></span> <strong>可持续原则</strong> — 每周至少 3 次力量，累了可跳过一次，保持习惯 > 猛练</span>
+        </div>
+        <div style="margin-top: 6px; font-size: 0.85rem; color: #475569;">
+            💡 周二/周四为主动恢复日，不练力量，只游泳放松，让神经系统和关节充分修复。
+        </div>
+    </div>
+</div>
+</body>
+</html>
