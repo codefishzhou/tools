@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的增肌饮食计划 · 70kg 久坐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f7fb;
+            color: #1e293b;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            background: #0b2a4a;
+            color: white;
+            padding: 24px 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        header .sub {
+            font-size: 16px;
+            opacity: 0.85;
+            margin-top: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        header .sub span {
+            background: rgba(255,255,255,0.15);
+            padding: 4px 16px;
+            border-radius: 30px;
+        }
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+        .day-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            overflow: hidden;
+            transition: transform 0.1s ease;
+        }
+        .day-card:hover {
+            transform: translateY(-4px);
+        }
+        .day-header {
+            padding: 16px 20px;
+            font-weight: 700;
+            font-size: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .day-header .badge {
+            font-size: 14px;
+            background: rgba(255,255,255,0.3);
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+        .day-body {
+            padding: 18px 20px 20px;
+        }
+        .meal {
+            margin-bottom: 16px;
+            border-bottom: 1px dashed #e9edf2;
+            padding-bottom: 14px;
+        }
+        .meal:last-child {
+            border-bottom: 0;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .meal-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #0b2a4a;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .meal-title .kcal {
+            font-weight: 400;
+            color: #64748b;
+            font-size: 14px;
+        }
+        .food-list {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #334155;
+        }
+        .food-list .highlight {
+            font-weight: 500;
+            color: #0b2a4a;
+        }
+        .food-list .note {
+            color: #64748b;
+            font-size: 13px;
+            display: block;
+            margin-top: 3px;
+        }
+        .totals {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .totals span {
+            background: #f1f5f9;
+            padding: 4px 14px;
+            border-radius: 30px;
+        }
+        .totals .protein {
+            color: #0b7e4b;
+        }
+        .totals .cal {
+            color: #b45309;
+        }
+        .footer-note {
+            background: #ffffffd9;
+            backdrop-filter: blur(4px);
+            border-radius: 16px;
+            padding: 18px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-top: 20px;
+            font-size: 14px;
+            color: #475569;
+            border-left: 6px solid #0b2a4a;
+        }
+        .footer-note strong {
+            color: #0b2a4a;
+        }
+        @media (max-width: 600px) {
+            header h1 { font-size: 22px; }
+            .day-grid { grid-template-columns: 1fr; }
+            .totals { flex-wrap: wrap; gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🏊‍♂️ 增肌饮食计划 · 70kg / 175cm</h1>
+    <div class="sub">
+        <span>🧑‍💻 久坐办公</span>
+        <span>🔥 基础代谢 ≈ 1670 kcal</span>
+        <span>⚡ 每日基础消耗 ≈ 2000 kcal</span>
+        <span>🥩 蛋白质目标 150g/日</span>
+    </div>
+</header>
+
+<div class="day-grid">
+
+    <!-- 周日 · 大练日 -->
+    <div class="day-card">
+        <div class="day-header" style="background:#1e4a6b;">
+            <span>🔥 大练日</span>
+            <span class="badge">周日 · 力量+50'游泳</span>
+        </div>
+        <div class="day-body">
+            <div class="meal">
+                <div class="meal-title">🌅 早餐 <span class="kcal">~480 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">红薯/玉米 200g</span><br>
+                    鸡蛋 2个 · 牛奶 1盒
+                </div>
+            </div>
+            <div class="meal">
+                <div class="meal-title">☀️ 午餐 <span class="kcal">~720 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">米饭 300g</span><br>
+                    鸡腿 2个（带皮）<br>
+                    蔬菜 200g
+                </div>
+            </div>
+            <div class="meal">
+                <div class="meal-title">⚡ 力量前加餐</div>
+                <div class="food-list">
+                    <span class="highlight">香蕉 1根</span>（训练前1小时）
+                </div>
+            </div>
+            <div class="meal">
+                <div class="meal-title">🌙 游泳后晚餐 <span class="kcal">~750 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">鸡胸肉 200g</span><br>
+                    <span class="highlight">燕麦 100g（干重）</span><br>
+                    牛奶 1盒 · 生菜 200g<br>
+                    <span class="note">+ 游泳后立刻吃 1 根香蕉</span>
+                </div>
+            </div>
+            <div class="totals">
+                <span class="cal">🔥 ≈ 2700 kcal</span>
+                <span class="protein">💪 蛋白质 ≈ 150g</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 周一/三/五 · 中练日 -->
+    <div class="day-card">
+        <div class="day-header" style="background:#2b5f7a;">
+            <span>💪 中练日</span>
+            <span class="badge">周一/三/五 · 力量40'+游泳30'</span>
+        </div>
+        <div class="day-body">
+            <div class="meal">
+                <div class="meal-title">🌅 早餐 <span class="kcal">~380 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">红薯/玉米 150g</span><br>
+                    鸡蛋 2个 · 牛奶 1盒
+                </div>
+            </div>
+            <div class="meal">
+                <div class="meal-title">☀️ 午餐 <span class="kcal">~720 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">米饭 280g</span><br>
+                    鸡腿 2个（带皮）<br>
+                    蔬菜 200g
+                </div>
+            </div>
+            <div class="meal">
+                <div class="meal-title">⚡ 力量前加餐</div>
+                <div class="food-list">
+                    <span class="highlight">香蕉 1根</span>（训练前1小时）
+                </div>
+            </div>
+            <div class="meal">
+                <div class="meal-title">🌙 游泳后晚餐 <span class="kcal">~620 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">鸡胸肉 200g</span><br>
+                    <span class="highlight">燕麦 80g（干重）</span><br>
+                    牛奶 1盒 · 生菜 200g<br>
+                    <span class="note">+ 游泳后加 1 片全麦面包（可选）</span>
+                </div>
+            </div>
+            <div class="totals">
+                <span class="cal">🔥 ≈ 2500 kcal</span>
+                <span class="protein">💪 蛋白质 ≈ 150g</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 周二/四 · 小练日 -->
+    <div class="day-card">
+        <div class="day-header" style="background:#3a7a8c;">
+            <span>🏊 小练日</span>
+            <span class="badge">周二/四 · 游泳20-30'</span>
+        </div>
+        <div class="day-body">
+            <div class="meal">
+                <div class="meal-title">🌅 早餐 <span class="kcal">~420 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">红薯/玉米 200g</span><br>
+                    鸡蛋 2个 · 牛奶 1盒
+                </div>
+            </div>
+            <div class="meal">
+                <div class="meal-title">☀️ 午餐 <span class="kcal">~640 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">米饭 200g</span><br>
+                    鸡腿 2个（带皮）<br>
+                    蔬菜 200g
+                </div>
+            </div>
+            <div class="meal">
+                <div class="meal-title">🌙 游泳后晚餐 <span class="kcal">~580 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">鸡胸肉 200g</span><br>
+                    <span class="highlight">燕麦 80g（干重）</span><br>
+                    牛奶 1盒 · 生菜 200g<br>
+                    <span class="note">+ 晚饭后加 1 根香蕉 + 1 个全蛋</span>
+                </div>
+            </div>
+            <div class="totals">
+                <span class="cal">🔥 ≈ 2200 kcal</span>
+                <span class="protein">💪 蛋白质 ≈ 150g</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 周六 · 休息日 -->
+    <div class="day-card">
+        <div class="day-header" style="background:#5a7a7a;">
+            <span>😴 休息日</span>
+            <span class="badge">周六 · 完全休息</span>
+        </div>
+        <div class="day-body">
+            <div class="meal">
+                <div class="meal-title">🌅 早餐 <span class="kcal">~380 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">红薯/玉米 100g</span><br>
+                    鸡蛋 2个 · 牛奶 1盒
+                </div>
+            </div>
+            <div class="meal">
+                <div class="meal-title">☀️ 午餐 <span class="kcal">~560 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">米饭 200g</span><br>
+                    鸡腿 2个（去半皮）<br>
+                    蔬菜 200g
+                </div>
+            </div>
+            <div class="meal">
+                <div class="meal-title">🌙 晚餐 <span class="kcal">~500 kcal</span></div>
+                <div class="food-list">
+                    <span class="highlight">鸡胸肉 200g</span><br>
+                    <span class="highlight">燕麦 50g（干重）</span><br>
+                    牛奶 1盒 · 生菜 200g<br>
+                    <span class="note">+ 加 1 个苹果或香蕉</span>
+                </div>
+            </div>
+            <div class="totals">
+                <span class="cal">🔥 ≈ 1900 kcal</span>
+                <span class="protein">💪 蛋白质 ≈ 145g</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer-note">
+    <strong>📌 执行要点：</strong><br>
+    • 鸡腿 <strong>保留皮</strong> 以补足脂肪（约 56g/天），维持睾酮水平。<br>
+    • 所有重量均为 <strong>生重</strong>（米饭为煮熟后重量，燕麦为干重）。<br>
+    • 游泳后 <strong>立即</strong> 吃香蕉（快速补糖），再吃正餐。<br>
+    • 每天饮水 ≥ 2.5L，避免久坐不动影响代谢。<br>
+    • 周六休息日严格控制热量，避免脂肪堆积。
+</div>
+
+</body>
+</html>
