@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>批量重命名ZIP内容</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="./批量重命名ZIP内容_files/jszip.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
@@ -100,11 +100,11 @@
     <h2>批量重命名 ZIP 内容</h2>
     <div class="form-group">
       <label for="zipInput">选择 ZIP 文件（可多选）</label>
-      <input type="file" id="zipInput" multiple accept=".zip" />
+      <input type="file" id="zipInput" multiple accept=".zip">
     </div>
     <div class="form-group">
       <label for="newNameInput">新文件名</label>
-      <input type="text" id="newNameInput" placeholder="输入新文件名" />
+      <input type="text" id="newNameInput" placeholder="输入新文件名">
     </div>
     <div class="form-group">
       <button onclick="processZips()">处理并生成下载链接</button>
@@ -112,33 +112,51 @@
     <div class="tip">仅会重命名与压缩包同名的根目录文件，其他文件保持不变。</div>
     <div id="downloadArea"></div>
   </div>
+
   <script>
     let files = [];
+
     document.getElementById('zipInput').addEventListener('change', e => {
       files = Array.from(e.target.files);
     });
 
+    // 只替换最后一次出现的 "00" 为 "0"
+    // 例：2026100900215 -> 202610090215
+    function normalizeNewName(raw) {
+      const idx = raw.lastIndexOf('00');
+      if (idx === -1) return raw;
+      return raw.slice(0, idx) + '0' + raw.slice(idx + 2);
+    }
+
     async function processZips() {
-      const newName = document.getElementById('newNameInput').value.trim().replace('00', '0');
-      if (!newName) {
+      const rawName = document.getElementById('newNameInput').value.trim();
+      if (!rawName) {
         alert('请先输入新文件名');
         return;
       }
+      const newName = normalizeNewName(rawName);
+      console.log('新文件名：', rawName, '->', newName);
+
+      if (files.length === 0) {
+        alert('请先选择 ZIP 文件');
+        return;
+      }
+
       for (const file of files) {
-        const baseName = file.name.replace(/\.zip$/, '');
+        const baseName = file.name.replace(/\.zip$/i, '');
         const zip = await JSZip.loadAsync(file);
         let renamed = false;
 
-        // 只处理根目录下的文件
-        const rootFiles = Object.keys(zip.files).filter(entryName => !entryName.includes('/'));
+        // 只处理根目录下的文件（路径中不含 "/"）
+        const rootFiles = Object.keys(zip.files).filter(
+          entryName => !entryName.includes('/') && !zip.files[entryName].dir
+        );
 
         for (const entryName of rootFiles) {
-          const fileBase = entryName;
-          const dotIndex = fileBase.lastIndexOf('.');
+          const dotIndex = entryName.lastIndexOf('.');
           if (dotIndex > 0) {
-            const name = fileBase.substring(0, dotIndex);
-            const ext = fileBase.substring(dotIndex); // 包含点
-            console.log(name, baseName, '--a')
+            const name = entryName.substring(0, dotIndex);
+            const ext = entryName.substring(dotIndex); // 含点
             if (name === baseName) {
               const content = await zip.files[entryName].async('uint8array');
               zip.remove(entryName);
@@ -150,6 +168,7 @@
 
         if (renamed) {
           const newZipBlob = await zip.generateAsync({ type: 'blob' });
+
           const downloadArea = document.getElementById('downloadArea');
           const a = document.createElement('a');
           a.href = URL.createObjectURL(newZipBlob);
@@ -157,22 +176,23 @@
           a.textContent = `下载：${newName}.zip`;
           a.style.marginRight = '18px';
 
-          // 自动触发下载
-          a.click();
-
           const removeBtn = document.createElement('button');
           removeBtn.textContent = '移除';
-          removeBtn.onclick = () => {
-            URL.revokeObjectURL(a.href);
-            downloadArea.removeChild(wrapper);
-          };
 
           const wrapper = document.createElement('div');
           wrapper.className = 'download-group';
           wrapper.appendChild(a);
           wrapper.appendChild(removeBtn);
 
+          removeBtn.onclick = () => {
+            URL.revokeObjectURL(a.href);
+            downloadArea.removeChild(wrapper);
+          };
+
           downloadArea.appendChild(wrapper);
+
+          // 自动触发下载
+          a.click();
         } else {
           alert('未找到同名文件: ' + file.name);
         }
