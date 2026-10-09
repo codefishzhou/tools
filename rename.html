@@ -120,12 +120,17 @@
       files = Array.from(e.target.files);
     });
 
-    // 只替换最后一次出现的 "00" 为 "0"
-    // 例：2026100900215 -> 202610090215
+    /**
+     * 规范新文件名
+     * "00" 固定出现在位置 8~9（YYYYMMDD 之后），去掉其中一个 "0"
+     * 例：2026100900215 -> 202610090215
+     */
     function normalizeNewName(raw) {
-      const idx = raw.lastIndexOf('00');
-      if (idx === -1) return raw;
-      return raw.slice(0, idx) + '0' + raw.slice(idx + 2);
+      if (raw.slice(8, 10) === '00') {
+        // 保留位置 8 的 0，去掉位置 9 的 0
+        return raw.slice(0, 9) + raw.slice(10);
+      }
+      return raw;
     }
 
     async function processZips() {
@@ -147,55 +152,64 @@
         const zip = await JSZip.loadAsync(file);
         let renamed = false;
 
-        // 只处理根目录下的文件（路径中不含 "/"）
+        // 只处理根目录下的文件（路径中不含 "/"，且不是目录条目）
         const rootFiles = Object.keys(zip.files).filter(
           entryName => !entryName.includes('/') && !zip.files[entryName].dir
         );
 
         for (const entryName of rootFiles) {
           const dotIndex = entryName.lastIndexOf('.');
-          if (dotIndex > 0) {
-            const name = entryName.substring(0, dotIndex);
-            const ext = entryName.substring(dotIndex); // 含点
-            if (name === baseName) {
-              const content = await zip.files[entryName].async('uint8array');
-              zip.remove(entryName);
-              zip.file(newName + ext, content);
-              renamed = true;
-            }
-          }
+          if (dotIndex <= 0) continue;
+
+          const name = entryName.slice(0, dotIndex);
+          const ext = entryName.slice(dotIndex); // 含点
+          if (name !== baseName) continue;
+
+          const content = await zip.files[entryName].async('uint8array');
+          zip.remove(entryName);
+          zip.file(newName + ext, content);
+          renamed = true;
         }
 
-        if (renamed) {
-          const newZipBlob = await zip.generateAsync({ type: 'blob' });
-
-          const downloadArea = document.getElementById('downloadArea');
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(newZipBlob);
-          a.download = newName + '.zip';
-          a.textContent = `下载：${newName}.zip`;
-          a.style.marginRight = '18px';
-
-          const removeBtn = document.createElement('button');
-          removeBtn.textContent = '移除';
-
-          const wrapper = document.createElement('div');
-          wrapper.className = 'download-group';
-          wrapper.appendChild(a);
-          wrapper.appendChild(removeBtn);
-
-          removeBtn.onclick = () => {
-            URL.revokeObjectURL(a.href);
-            downloadArea.removeChild(wrapper);
-          };
-
-          downloadArea.appendChild(wrapper);
-
-          // 自动触发下载
-          a.click();
-        } else {
+        if (!renamed) {
           alert('未找到同名文件: ' + file.name);
+          continue;
         }
+
+        // ★ 关键：使用 DEFLATE 压缩
+        // JSZip 的 generateAsync 默认 compression 是 "STORE"（不压缩），
+        // 会导致输出包体积直接翻倍（例如 10MB -> 20MB）。
+        // 显式指定 DEFLATE 才能保持原来的压缩体积。
+        const newZipBlob = await zip.generateAsync({
+          type: 'blob',
+          compression: 'DEFLATE',
+          compressionOptions: { level: 9 }
+        });
+
+        const downloadArea = document.getElementById('downloadArea');
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(newZipBlob);
+        a.download = newName + '.zip';
+        a.textContent = `下载：${newName}.zip`;
+        a.style.marginRight = '18px';
+
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = '移除';
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'download-group';
+        wrapper.appendChild(a);
+        wrapper.appendChild(removeBtn);
+
+        removeBtn.onclick = () => {
+          URL.revokeObjectURL(a.href);
+          downloadArea.removeChild(wrapper);
+        };
+
+        downloadArea.appendChild(wrapper);
+
+        // 自动触发下载
+        a.click();
       }
     }
   </script>
